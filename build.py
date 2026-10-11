@@ -8,6 +8,17 @@ Nothing else needs to change.
 """
 import json, urllib.parse, pathlib
 
+# ===================================================================
+#  PASTE THE ACTIVECAMPAIGN EMBED CODE BETWEEN THE TRIPLE QUOTES.
+#  Leave it empty and the signup section falls back to a button that
+#  sends people to the existing Wix opt-in page, so the funnel keeps
+#  working either way.
+#    ActiveCampaign -> Website -> Forms -> your form -> Integrate
+# ===================================================================
+FORM_EMBED = """"""
+
+FALLBACK_OPTIN = "https://guy996.wixsite.com/allegragrant"
+
 SITE   = "https://allegragrant.com/"
 AUTHOR = "Allegra Grant"
 
@@ -133,6 +144,22 @@ social_html = " \u00b7 ".join(
     '<a href="%s" rel="noopener me">%s</a>' % (url, esc(name))
     for _net, name, url in SOCIAL)
 
+if FORM_EMBED.strip():
+    form_block = '<div class="ac-form">%s</div>' % FORM_EMBED
+else:
+    form_block = ('<a class="btn" href="%s" rel="noopener">Send me the guide</a>'
+                  % FALLBACK_OPTIN)
+
+signup_html = '''      <img class="guide-cover" src="media/crystal-guide.webp" width="220" height="351"
+           alt="Cover of The Complete Guide to Cleansing and Charging Your Crystals" loading="lazy">
+      <div class="signup-body">
+        <p class="feat-eyebrow">Free guide</p>
+        <h2>The Complete Guide to Cleansing &amp; Charging Your Crystals</h2>
+        <p>Why you should care for your crystals, a complete list of cleansing and charging
+        methods, and the practices I actually use myself. Free \u2014 I\u2019ll email it to you.</p>
+        %s
+      </div>''' % form_block
+
 DESC = ("Allegra Grant writes everyday self-care guides built on astrology, crystals, essential "
         "oils and a little witchcraft — Crystals and Gemstones for Kids and Teens, the "
         "twelve-book Zodiac Self-care Encyclopedia, Crystals for the Mind, and Your First Spell Jar.")
@@ -175,6 +202,21 @@ h1{font-family:"Gloock",Georgia,serif;font-weight:400;font-size:clamp(2.9rem,8.5
 
 .elsewhere a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--rule);}
 .elsewhere a:hover{color:var(--accent);border-bottom-color:var(--accent);}
+
+.signup{display:grid;grid-template-columns:220px 1fr;gap:38px;align-items:center;
+  padding-block:52px;border-bottom:1px solid var(--rule);}
+.guide-cover{width:100%;height:auto;border-radius:4px;box-shadow:0 14px 36px rgba(0,0,0,.55);}
+.signup-body h2{font-family:"Gloock",Georgia,serif;font-weight:400;
+  font-size:clamp(1.4rem,3vw,2rem);line-height:1.18;margin:0 0 14px;}
+.signup-body > p:not(.feat-eyebrow){font-size:15.5px;line-height:1.7;color:var(--muted);
+  margin:0 0 22px;max-width:50ch;}
+.ac-form input[type=text],.ac-form input[type=email]{
+  background:var(--surface);border:1px solid var(--rule);color:var(--ink);
+  padding:11px 13px;border-radius:3px;font:inherit;font-size:14px;margin:0 8px 8px 0;max-width:100%;}
+.ac-form input[type=submit],.ac-form button{
+  background:var(--ink);color:var(--ground);border:0;padding:12px 18px;border-radius:2px;
+  font:inherit;font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;cursor:pointer;}
+.ac-form input[type=submit]:hover,.ac-form button:hover{background:var(--accent);}
 
 .featured{display:grid;grid-template-columns:1.25fr 1fr;gap:44px;align-items:center;
   padding-block:52px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
@@ -232,6 +274,8 @@ footer p{font-size:13.5px;line-height:1.7;color:var(--muted);margin:0 0 9px;max-
 
 @media (max-width:720px){
   .featured{grid-template-columns:1fr;gap:26px;}
+  .signup{grid-template-columns:1fr;gap:24px;}
+  .guide-cover{max-width:180px;}
   .byline{gap:14px;}
   .byline img{width:60px;height:60px;}
 }
@@ -271,7 +315,7 @@ PAGE = """<!doctype html>
     <p class="standfirst">Self-care you can actually do on a Tuesday.</p>
     <div class="byline">
       <img src="media/allegra-avatar.webp" width="76" height="76" alt="Allegra Grant" loading="lazy">
-      <p class="bio">I’m not a mystic and I’m not a guru — I’m the friend who went down this rabbit hole, talked to everyone who would talk to me, tried all of it, and came back genuinely excited. My books are built around <strong>everyday rituals</strong>: crystals, essential oils, herbs, chakras, tarot, yoga, affirmations, and a little witchcraft. No mystique, no gatekeeping, nothing you need to already believe. Just what to do, and why it might be worth doing.</p>
+      <p class="bio">Hey everyone, I’m Allegra, and I’m a crystal girl. I got started on this path a few years ago — after a few glasses of red wine — when I stumbled into a crystal shop in New York City, and well, my whole life changed. Everything I’ve learned since has gone into these books: <strong>crystals, essential oils, herbs, chakras, tarot, yoga, affirmations, and a little witchcraft</strong>. No mystique, no gatekeeping, nothing you need to already believe. Just what to do, and why it’s worth doing.</p>
     </div>
   </header>
 
@@ -299,9 +343,14 @@ __BOOKS__
     </div>
   </section>
 
+  <div class="signup">
+__SIGNUP__
+  </div>
+
   <footer>
     <p>Available on Kindle and in paperback, with audiobook editions for the three standalone guides and the Leo Self-care Encyclopedia.</p>
     <p>Nothing here is medical, psychological, or financial advice. Crystals and rituals are a complement to care, never a replacement for it.</p>
+    <p class="elsewhere">Write to Allegra anytime: <a href="mailto:info@AllegraGrant.com">info@AllegraGrant.com</a></p>
     <p class="elsewhere">Elsewhere: __SOCIAL__</p>
     <p>Published by GO Publishing LLC.</p>
   </footer>
@@ -334,6 +383,7 @@ html = (PAGE.replace("__DESC__", esc(DESC))
             .replace("__WHEEL__", "\n".join(sign_cards))
             .replace("__BOOKS__", "\n".join(book_cards))
             .replace("__SOCIAL__", social_html)
+            .replace("__SIGNUP__", signup_html)
             .replace("__LD__", LD))
 
 out = pathlib.Path(__file__).parent / "index.html"
