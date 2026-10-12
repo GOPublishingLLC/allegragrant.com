@@ -197,7 +197,9 @@ img{max-width:100%;display:block;}
 a{color:inherit;}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
 
-.masthead{padding-block:72px 44px;}
+html{scroll-behavior:smooth;}
+.masthead{padding-block:72px 44px;display:grid;grid-template-columns:1fr;gap:34px;}
+@media (min-width:880px){.masthead{grid-template-columns:1fr 132px;column-gap:48px;align-items:start;}}
 .eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin:0 0 20px;}
 h1{font-family:"Gloock",Georgia,serif;font-weight:400;font-size:clamp(2.9rem,8.5vw,5.2rem);
    line-height:1.0;margin:0 0 20px;text-wrap:balance;}
@@ -209,6 +211,17 @@ h1{font-family:"Gloock",Georgia,serif;font-weight:400;font-size:clamp(2.9rem,8.5
 .byline{display:flex;align-items:flex-start;gap:18px;margin-top:4px;}
 .byline img{width:76px;height:76px;flex:0 0 auto;border-radius:50%;
   background:rgba(200,160,78,.10);border:1px solid var(--rule);}
+
+.gift{display:block;text-decoration:none;width:104px;justify-self:start;}
+.gift img{width:100%;height:auto;border-radius:4px;border:1px solid var(--rule);
+  box-shadow:0 12px 30px rgba(0,0,0,.55);transition:transform .18s ease,box-shadow .18s ease;}
+.gift span{display:block;margin-top:11px;text-align:center;font-size:10.5px;font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--accent);transition:color .18s ease;}
+.gift:hover img{transform:translateY(-3px);box-shadow:0 18px 40px rgba(0,0,0,.68);}
+.gift:hover span{color:var(--ink);}
+@media (min-width:880px){.gift{width:132px;justify-self:end;}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}
+  .gift img{transition:none;} .gift:hover img{transform:none;}}
 
 .feat-video video{width:100%;height:auto;aspect-ratio:16/9;display:block;border-radius:5px;
   background:#0C100E;box-shadow:0 18px 44px rgba(0,0,0,.6);}
@@ -272,7 +285,7 @@ section{padding-block:56px;border-bottom:1px solid var(--rule);}
 
 .books{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);}
 .book{background:var(--surface);padding:26px 24px;display:flex;gap:20px;align-items:flex-start;}
-.book img{flex:0 0 auto;width:120px;border-radius:3px;box-shadow:0 6px 18px rgba(0,0,0,.45);}
+.book img{flex:0 0 auto;width:120px;height:auto;border-radius:3px;box-shadow:0 6px 18px rgba(0,0,0,.45);}
 .book-body{min-width:0;}
 .book h3{font-family:"Gloock",Georgia,serif;font-weight:400;font-size:1.16rem;margin:0 0 9px;line-height:1.3;}
 .book p{margin:0 0 15px;font-size:14px;line-height:1.65;color:var(--muted);}
@@ -326,6 +339,7 @@ PAGE = """<!doctype html>
 <div class="wrap">
 
   <header class="masthead">
+   <div class="masthead-main">
     <p class="eyebrow">Astrology · Crystals · Everyday Ritual</p>
     <h1>Allegra&nbsp;Grant</h1>
     <p class="standfirst">Self-care you can actually do on a Tuesday.</p>
@@ -333,6 +347,12 @@ PAGE = """<!doctype html>
       <img src="media/allegra-avatar.webp" width="76" height="76" alt="Allegra Grant" loading="lazy">
       <p class="bio">Hey everyone, I’m Allegra, and I’m a crystal girl. I got started on this path a few years ago — after a few glasses of red wine — when I stumbled into a crystal shop in New York City, and well, my whole life changed. Everything I’ve learned since has gone into these books: <strong>crystals, essential oils, herbs, chakras, tarot, yoga, affirmations, and a little witchcraft</strong>. No mystique, no gatekeeping, nothing you need to already believe. Just what to do, and why it’s worth doing.</p>
     </div>
+   </div>
+   <a class="gift" href="#signup">
+     <img src="media/crystal-guide.webp" width="132" height="211"
+          alt="Cover of the free guide: The Complete Guide to Cleansing and Charging Your Crystals">
+     <span>Free Gift</span>
+   </a>
   </header>
 
   <div class="featured">
@@ -359,7 +379,7 @@ __BOOKS__
     </div>
   </section>
 
-  <div class="signup">
+  <div class="signup" id="signup">
 __SIGNUP__
   </div>
 
